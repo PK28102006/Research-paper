@@ -1,0 +1,123 @@
+/* Landing Page */
+.hero-section {
+  background: #eff6ff;
+  color: #1e3a8a;
+  padding: 5rem 2rem 8rem;
+  text-align: center;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.025em;
+  color: #1e3a8a; /* Uniform Dark Blue */
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+  color: #1e3a8a; /* Uniform Dark Blue */
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.btn-hero {
+  padding: 0.875rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-hero-primary {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-2px);
+  background-color: #1d4ed8;
+  box-shadow: 0 10px 15px rgba(37, 99, 235, 0.3);
+}
+
+.btn-hero-secondary {
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  color: #4b5563;
+}
+
+.btn-hero-secondary:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* Features */
+.features-section {
+  padding: 4rem 2rem;
+  background-color: #f9fafb; /* Match page background */
+  margin-top: -4rem; /* Pull up to cover the clip-path gap if needed, or just let it flow */
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  background-color: #f9fafb;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+}
+
+.feature-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.feature-desc {
+  color: #4b5563;
+  line-height: 1.6;
+}

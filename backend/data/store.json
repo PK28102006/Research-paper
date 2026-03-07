@@ -1,0 +1,59 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Admin User",
+      "email": "admin@journal.com",
+      "role": "admin",
+      "password": "$2a$10$L4XyFCoqnvn24/ZA3YLoR.1ktXqDiRJLGmyR.zTZ.1mdMez14/pHO"
+    },
+    {
+      "name": "nakulan",
+      "email": "nakulan12@gmail.com",
+      "password": "$2a$10$Ry3LT4.o52rr5kXH16i8deFyekqngQq8DF9jwZNGNkSyNKffdQrAS",
+      "role": "reviewer",
+      "id": "1771009419398"
+    },
+    {
+      "name": "varun",
+      "email": "varun@gmail.com",
+      "password": "$2a$10$gmlDD8kdEfYAIy9vx9m0sezuO7PEZcEl3FykR6xFsc0UaIdj8Dg/6",
+      "role": "student",
+      "id": "1771044745387"
+    },
+    {
+      "id": "1771405668536",
+      "name": "naveen",
+      "email": "naveen12@gmail.com",
+      "password": "$2a$10$ikhEpy5zZuj2DTnaHdO9dO55SEcac0k7vXig47kPVn7yJLR9BaJ/C",
+      "role": "student",
+      "createdAt": "2026-02-18T09:07:48.536Z"
+    },
+    {
+      "id": "1771407859203",
+      "name": "rishi",
+      "email": "rishi12@gmail.com",
+      "password": "$2a$10$liILRzwvNvyM6pE/jul96uts1l/AM3TlnbIO.u4lumkiCV.DW9rNG",
+      "role": "reviewer",
+      "createdAt": "2026-02-18T09:44:19.203Z"
+    }
+  ],
+  "papers": [
+    {
+      "id": "test-paper-1",
+      "title": "Test Paper for Review",
+      "abstract": "This is a test paper abstract. It should appear in the reviewer dashboard.",
+      "keywords": "Test, Review, Dashboard",
+      "pdfName": "test_paper.pdf",
+      "authorId": "1771004557567",
+      "authorName": "arun",
+      "reviewerId": "1771009419398",
+      "reviewerName": "nakulan",
+      "status": "approved",
+      "submittedAt": "2026-02-14T00:30:00.000Z",
+      "comments": [],
+      "reviewedBy": "nakulan",
+      "reviewedAt": "2026-02-13T19:07:25.521Z"
+    }
+  ]
+}

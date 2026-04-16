@@ -1,10 +1,17 @@
 const { Pool } = require('pg');
 const config = require('./index');
 
+const dbUrl = config.dbUrl || process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/research_portal';
+
+// Enable SSL for cloud databases (Neon, Supabase, etc.) or production
+const needsSsl = dbUrl.includes('neon.tech') || dbUrl.includes('supabase') || dbUrl.includes('sslmode=require') || process.env.NODE_ENV === 'production';
+
 const pool = new Pool({
-  connectionString: config.dbUrl || process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/research_portal',
-  // In production, you might want to enable SSL
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  connectionString: dbUrl,
+  ssl: needsSsl ? { rejectUnauthorized: false } : false,
+  connectionTimeoutMillis: 30000,  // 30 seconds — Neon free tier can take time to wake up
+  idleTimeoutMillis: 30000,
+  max: 10,
 });
 
 // Test connection
@@ -14,7 +21,6 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
   console.error('❌ Unexpected error on idle client', err);
-  process.exit(-1);
 });
 
 module.exports = {

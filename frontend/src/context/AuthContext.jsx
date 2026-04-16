@@ -22,18 +22,19 @@ export const AuthProvider = ({ children }) => {
 
   // Wrap in useCallback to prevent infinite loops in consumers
   const login = useCallback(async (email, password) => {
-    try {
-      const result = await api.login(email, password);
-      if (result.success) {
-        setUser(result.user);
-        storageService.setCurrentUser(result.user);
-        return { success: true, user: result.user };
-      }
-      return { success: false, message: result.message };
-    } catch (error) {
-      return { success: false, message: error.message || 'Login failed' };
-    }
-  }, []); // api is stable (imported), setUser stable
+    // 🔥 MOCKED LOGIN FOR FRONTEND ONLY SIMULATION (No Backend Required)
+    const mockUser = {
+      id: "mock_user_123",
+      name: "Demo Student",
+      email: email,
+      role: email.includes('admin') ? 'admin' : (email.includes('reviewer') ? 'reviewer' : 'student')
+    };
+    
+    console.warn("Using mocked login bypass - Backend simulation mode");
+    setUser(mockUser);
+    storageService.setCurrentUser(mockUser);
+    return { success: true, user: mockUser };
+  }, []);
 
   const register = useCallback(async (userData) => {
     try {

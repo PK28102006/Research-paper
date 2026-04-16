@@ -4,8 +4,8 @@ const initSchema = async () => {
   try {
     console.log('🔄 Initializing database schema...');
 
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS users (
+    const queries = [
+      `CREATE TABLE IF NOT EXISTS users (
         id VARCHAR(255) PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -13,9 +13,8 @@ const initSchema = async () => {
         role VARCHAR(50) NOT NULL CHECK (role IN ('student', 'teacher', 'admin', 'reviewer')),
         mentor VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-
-      CREATE TABLE IF NOT EXISTS papers (
+      );`,
+      `CREATE TABLE IF NOT EXISTS papers (
         id VARCHAR(255) PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
         abstract TEXT NOT NULL,
@@ -32,16 +31,14 @@ const initSchema = async () => {
         submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         reviewed_at TIMESTAMP,
         reviewed_by VARCHAR(255)
-      );
-
-      CREATE TABLE IF NOT EXISTS team_members (
+      );`,
+      `CREATE TABLE IF NOT EXISTS team_members (
         id SERIAL PRIMARY KEY,
         paper_id VARCHAR(255) REFERENCES papers(id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL
-      );
-
-      CREATE TABLE IF NOT EXISTS reviews (
+      );`,
+      `CREATE TABLE IF NOT EXISTS reviews (
         id SERIAL PRIMARY KEY,
         paper_id VARCHAR(255) REFERENCES papers(id) ON DELETE CASCADE,
         reviewer_id VARCHAR(255) REFERENCES users(id) ON DELETE SET NULL,
@@ -49,8 +46,12 @@ const initSchema = async () => {
         status_decision VARCHAR(50) CHECK (status_decision IN ('approved', 'rejected')),
         rejection_reason TEXT,
         review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+      );`
+    ];
+
+    for (const q of queries) {
+      await db.query(q);
+    }
     
     // Self-heal logic if schema was created with NOT NULL mistakenly earlier
     try {

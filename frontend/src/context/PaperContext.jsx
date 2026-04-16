@@ -12,8 +12,14 @@ export const PaperProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load papers on mount
+    // Load papers when user authenticates
     const loadPapers = async () => {
+      if (!user) {
+        setPapers([]);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
       try {
         const storedPapers = await api.getPapers();
         setPapers(storedPapers);
@@ -24,7 +30,7 @@ export const PaperProvider = ({ children }) => {
       }
     };
     loadPapers();
-  }, []);
+  }, [user]);
 
   const submitPaper = async (paperData) => {
     const newPaper = {
@@ -37,11 +43,11 @@ export const PaperProvider = ({ children }) => {
       comments: []
     };
     try {
-      await api.submitPaper(newPaper);
-      setPapers(prev => [...prev, newPaper]);
+      const response = await api.submitPaper(newPaper);
+      setPapers(prev => [...prev, response.paper]);
       return { success: true };
     } catch (error) {
-       return { success: false, message: 'Submission failed' };
+       return { success: false, message: error.message || 'Submission failed' };
     }
   };
 
@@ -73,34 +79,30 @@ export const PaperProvider = ({ children }) => {
     }
   };
 
-  const updatePaperStatus = async (paperId, status) => {
-    const paper = papers.find(p => p.id === paperId);
-    if (paper) {
-      const updatedPaper = { ...paper, status };
-      return updatePaper(updatedPaper);
+  const updatePaperStatus = async (paperId, status, rejectionReason = null) => {
+    try {
+      const response = await api.updatePaperStatus(paperId, status, null, rejectionReason);
+      setPapers(prev => prev.map(p => p.id === paperId ? response.paper : p));
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message || 'Update status failed' };
     }
-    return { success: false, message: 'Paper not found' };
   };
 
   const addComment = async (paperId, commentText) => {
     const paper = papers.find(p => p.id === paperId);
-    if (paper) {
-      const newComment = {
-        id: Date.now().toString(),
-        text: commentText,
-        authorName: user.name,
-        createdAt: new Date().toISOString()
-      };
-      const updatedPaper = { ...paper, comments: [...(paper.comments || []), newComment] };
-      try {
-        await api.updatePaper(updatedPaper);
-        setPapers(prev => prev.map(p => p.id === paperId ? updatedPaper : p));
-        return { success: true };
-      } catch (error) {
-        return { success: false, message: 'Comment failed' };
-      }
+    if (!paper) {
+      return { success: false, message: 'Paper not found' };
     }
-    return { success: false, message: 'Paper not found' };
+    
+    try {
+      // The new /comments endpoint accepts comments from authors, reviewers, and admins
+      const response = await api.addCommentToPaper(paperId, commentText);
+      setPapers(prev => prev.map(p => p.id === paperId ? response.paper : p));
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message || 'Comment failed' };
+    }
   };
 
   return (

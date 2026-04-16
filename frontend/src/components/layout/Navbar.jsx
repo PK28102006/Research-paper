@@ -19,7 +19,9 @@ const Navbar = () => {
         <div className="navbar-actions">
           <span className="user-info">
              <User size={18} />
-             {user?.name} ({user?.role})
+             <span className="user-text">
+               {user?.name} ({user?.role})
+             </span>
           </span>
           <button onClick={handleLogout} className="btn-logout" title="Logout">
             <LogOut size={18} />

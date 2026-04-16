@@ -7,14 +7,14 @@ const Home = () => {
     <div>
       {/* Hero Section */}
       <section className="hero-section">
-        <h1 className="hero-title">Publish Your Research with Confidence</h1>
+        <h1 className="hero-title">Publish Your Research <span>with Confidence</span></h1>
         <p className="hero-subtitle">
           A streamlined platform for students to submit, review, and publish their academic journal papers. 
           Join a community of scholars today.
         </p>
         <div className="hero-actions">
           <Link to="/register" className="btn-hero btn-hero-primary">
-            Get Started
+            Apply Now
           </Link>
           <Link to="/about" className="btn-hero btn-hero-secondary">
             Learn More
@@ -28,27 +28,27 @@ const Home = () => {
         <div className="features-grid">
           
           <div className="feature-card">
-            <div className="feature-icon-wrapper" style={{ backgroundColor: '#eff6ff', color: '#2563eb' }}>
-              <FileText size={36} />
+            <div className="feature-icon-wrapper">
+              <FileText size={36} strokeWidth={1.5} />
             </div>
-            <h3 className="feature-title">Easy Submission</h3>
-            <p className="feature-desc">Intuitive interface for students to submit their research papers, abstracts, and manuscripts in PDF format.</p>
+            <h3 className="feature-title">Intuitive Submission</h3>
+            <p className="feature-desc">A frictionless interface for students to submit their research manuscripts, complete with secure cloud validation.</p>
           </div>
 
           <div className="feature-card">
-            <div className="feature-icon-wrapper" style={{ backgroundColor: '#ecfdf5', color: '#059669' }}>
-              <CheckCircle size={36} />
+            <div className="feature-icon-wrapper">
+              <CheckCircle size={36} strokeWidth={1.5} />
             </div>
-            <h3 className="feature-title">Peer Review</h3>
-            <p className="feature-desc">Automated workflow for teachers and reviewers to provide feedback, request revisions, and approve submissions.</p>
+            <h3 className="feature-title">Rigorous Peer Review</h3>
+            <p className="feature-desc">An advanced, double-blind workflow allowing distinguished reviewers to evaluate, request revisions, and approve submissions.</p>
           </div>
 
           <div className="feature-card">
-            <div className="feature-icon-wrapper" style={{ backgroundColor: '#f5f3ff', color: '#7c3aed' }}>
-              <Users size={36} />
+            <div className="feature-icon-wrapper">
+              <Users size={36} strokeWidth={1.5} />
             </div>
              <h3 className="feature-title">Community Driven</h3>
-             <p className="feature-desc">Foster a community of student researchers, ensuring academic excellence and transparent publication processes.</p>
+             <p className="feature-desc">Foster a vibrant community of elite researchers, ensuring academic distinction and completely transparent publication.</p>
           </div>
 
         </div>

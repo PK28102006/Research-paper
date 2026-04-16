@@ -29,9 +29,9 @@ const ReviewPapers = () => {
         <h2 style={{ marginBottom: '2rem' }}>Review Papers</h2>
         
         <div className="recent-papers">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h3 style={{ margin: 0 }}>Papers for Review</h3>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                     <div style={{ position: 'relative' }}>
                         <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
                         <input 
@@ -64,7 +64,7 @@ const ReviewPapers = () => {
             <div className="paper-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {filteredPapers.map(paper => (
                 <div key={paper.id} style={{
-                    backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                    backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem'
                 }}>
                     <div>
                     <h4 style={{ margin: '0 0 0.5rem 0' }}>{paper.title}</h4>
@@ -72,7 +72,7 @@ const ReviewPapers = () => {
                         Author: {paper.authorName} • Submitted: {new Date(paper.submittedAt).toLocaleDateString()}
                     </p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                     <StatusBadge status={paper.status} />
                     <Link to={`/dashboard/paper/${paper.id}`} className="btn-secondary" style={{
                         padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', textDecoration: 'none', color: '#374151', fontSize: '0.875rem'

@@ -28,7 +28,8 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = User.create({
+    const user = await User.create({
+      id: Date.now().toString(),
       name,
       email,
       password: hashedPassword,
@@ -49,6 +50,9 @@ const register = async (req, res, next) => {
       user: sanitizedUser
     });
   } catch (error) {
+    if (error.message === 'Email already exists') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     next(error);
   }
 };
@@ -61,7 +65,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = User.findByEmail(email);
+    const user = await User.findByEmail(email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -108,7 +112,7 @@ const login = async (req, res, next) => {
 // @access  Private
 const getMe = async (req, res, next) => {
   try {
-    const user = User.findById(req.user.id);
+    const user = await User.findById(req.user.id);
     
     if (!user) {
       return res.status(404).json({

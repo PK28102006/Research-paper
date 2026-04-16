@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import '../../styles/auth.css';
 
 const Register = () => {
@@ -47,6 +48,9 @@ const Register = () => {
 
   return (
     <div className="auth-container">
+      <Link to="/register" className="auth-back-btn">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <div className="auth-card">
         <h2 className="auth-title">Create {getRoleTitle()} Account</h2>
         {error && <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.75rem', borderRadius: '6px', marginBottom: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
@@ -86,21 +90,6 @@ const Register = () => {
             />
           </div>
 
-          {formData.role === 'student' && (
-             <div className="form-group">
-                <label className="form-label">Mentor Name</label>
-                <input
-                  type="text"
-                  name="mentor"
-                  className="form-input"
-                  value={formData.mentor || ''}
-                  onChange={handleChange}
-                  placeholder="e.g. Dr. Jane Doe"
-                  required
-                />
-             </div>
-          )}
-          
 
           
           {/* Hide role selector if param is present, or show it? Better to show but maybe disabled? 

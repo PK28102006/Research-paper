@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield } from 'lucide-react';
+import { Shield, ArrowLeft } from 'lucide-react';
 import '../../styles/auth.css';
 
 const AdminLogin = () => {
@@ -42,6 +42,9 @@ const AdminLogin = () => {
 
   return (
     <div className="auth-container" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' }}>
+      <Link to="/login" className="auth-back-btn">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <div className="auth-card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ display: 'inline-flex', padding: '1rem', backgroundColor: '#f1f5f9', borderRadius: '50%', marginBottom: '1rem' }}>

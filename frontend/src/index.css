@@ -1,19 +1,36 @@
-/* Standard CSS variables */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap');
 
-/* We aren't using Tailwind, but sticking to standard CSS as per request or just standard CSS variables */
 :root {
-  --primary-color: #2563eb;
-  --secondary-color: #1e40af;
-  --background-color: #f3f4f6;
-  --surface-color: #ffffff;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --border-radius: 8px;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  /* Prestige Ivy-League / High-End Academic Palette (Gold & Obsidian) */
+  --primary-color: #C5A059; /* Prestige Gold */
+  --primary-hover: #A88746; /* Deep Gold */
+  --primary-light: #FDFBF7; /* Champagne Tint */
+  
+  --accent-color: #121212; /* Obsidian Black */
+  --accent-hover: #000000; /* Pure Black */
+  
+  --background-color: #F5F2EB; /* Elegant warm cream / linen */
+  --surface-color: #FFFFFF; /* Pure White */
+  
+  --text-primary: #121212; /* Obsidian Default */
+  --text-secondary: #5C5C5C; /* Charcoal Gray */
+  --text-muted: #9E9E9E; /* Silver Gray */
+  
+  --success-color: #2E5A27; /* Forest Green */
+  --warning-color: #B8860B; /* Dark Goldenrod */
+  --error-color: #8B0000; /* Dark Red */
+  
+  --border-radius-sm: 2px; /* Extremely sharp, tailored corners */
+  --border-radius: 4px;
+  --border-radius-lg: 8px;
+  --border-color: #E0E0E0; /* Subtle Light Silver */
+  
+  /* Museum / Gallery Quality Shadows - Extremely soft and deep */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.06);
+  
+  --transition-fast: 0.3s cubic-bezier(0.25, 1, 0.5, 1); /* Elegant easing */
 }
 
 body {
@@ -22,6 +39,17 @@ body {
   background-color: var(--background-color);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Prestige Serifs for all major headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: -0.01em;
+  color: var(--accent-color);
+  margin-top: 0;
 }
 
 * {
@@ -31,4 +59,23 @@ body {
 a {
   text-decoration: none;
   color: inherit;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+button {
+  font-family: 'Inter', sans-serif; /* Clean sans-serif for UI interactions */
+}
+
+/* Formal Corporate Card Styles */
+.card-professional {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.card-professional:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }

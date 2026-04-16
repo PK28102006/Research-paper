@@ -251,12 +251,27 @@ export const api = {
     }
   },
 
-  updatePaperStatus: async (paperId, status, comments = null) => {
+  updatePaperStatus: async (paperId, status, comments = null, rejectionReason = null) => {
     try {
       const res = await fetch(`${API_URL}/papers/${paperId}/status`, {
         method: 'PUT',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ status, comments }),
+        body: JSON.stringify({ status, comments, rejectionReason }),
+      });
+      
+      return await handleResponse(res);
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
+  addCommentToPaper: async (paperId, text) => {
+    try {
+      const res = await fetch(`${API_URL}/papers/${paperId}/comments`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ text }),
       });
       
       return await handleResponse(res);

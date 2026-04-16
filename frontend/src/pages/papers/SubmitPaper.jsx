@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { usePapers } from '../../context/PaperContext';
 import { useNavigate } from 'react-router-dom';
-import { Upload } from 'lucide-react';
+import { Upload, ArrowLeft } from 'lucide-react';
 import { api } from '../../services/api';
 
 const SubmitPaper = () => {
@@ -10,7 +10,8 @@ const SubmitPaper = () => {
     title: '',
     abstract: '',
     keywords: '',
-    pdfName: '', // Mock PDF upload
+    pdfName: '', // File name
+    pdfData: '', // File contents encoded as base64
     reviewerId: '', // Selected mentor
     projectType: 'Individual',
     teamSize: 1,
@@ -18,6 +19,9 @@ const SubmitPaper = () => {
   });
   const [reviewers, setReviewers] = useState([]);
   const [loadingReviewers, setLoadingReviewers] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { submitPaper } = usePapers();
   const navigate = useNavigate();
@@ -41,7 +45,7 @@ const SubmitPaper = () => {
     
     if (name === 'projectType') {
       if (value === 'Team') {
-        setFormData({ ...formData, projectType: value, teamSize: 2, teamMembers: [{name: '', email: ''}] });
+        setFormData({ ...formData, projectType: value, teamSize: 2, teamMembers: [{name: '', email: ''}, {name: '', email: ''}] });
       } else {
         setFormData({ ...formData, projectType: value, teamSize: 1, teamMembers: [] });
       }
@@ -50,9 +54,8 @@ const SubmitPaper = () => {
       
       const members = [...formData.teamMembers];
       if (typeof sizeVal === 'number' && !isNaN(sizeVal) && sizeVal >= 1) {
-        // adjust members array to size - 1
-        while (members.length < sizeVal - 1) members.push({ name: '', email: '' });
-        while (members.length > sizeVal - 1) members.pop();
+        while (members.length < sizeVal) members.push({ name: '', email: '' });
+        while (members.length > sizeVal) members.pop();
       }
       setFormData({ ...formData, teamSize: sizeVal, teamMembers: members });
     } else {
@@ -67,31 +70,52 @@ const SubmitPaper = () => {
   };
 
   const handleFileChange = (e) => {
-    // Mock file handling - just storing the name
-    if (e.target.files[0]) {
-      setFormData({ ...formData, pdfName: e.target.files[0].name });
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, pdfName: file.name, pdfData: reader.result }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(false);
+    setIsSubmitting(true);
 
-    await submitPaper(formData);
-    navigate('/dashboard');
+    const result = await submitPaper(formData);
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+    } else {
+      setError(result.message || 'Failed to submit paper');
+    }
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '2rem' }}>Submit New Research Paper</h2>
-      <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Project Type</label>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1rem 0 3rem' }}>
+      <button onClick={() => navigate(-1)} style={{ 
+        background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#6b7280', marginBottom: '2rem', padding: 0, fontSize: '0.9rem', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: '500', transition: 'color 0.2s'
+      }} onMouseOver={(e) => e.target.style.color = '#111827'} onMouseOut={(e) => e.target.style.color = '#6b7280'}>
+        <ArrowLeft size={16} /> Back
+      </button>
+      <h2 style={{ marginBottom: '2.5rem', fontSize: '2rem' }}>Submit New Research Paper</h2>
+      <div className="card-professional" style={{ padding: '3rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+             <label className="form-label">Project Type</label>
              <select
               name="projectType"
               value={formData.projectType}
               onChange={handleChange}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: 'white' }}
+              className="form-input"
              >
                 <option value="Individual">Individual</option>
                 <option value="Team">Team</option>
@@ -100,8 +124,8 @@ const SubmitPaper = () => {
 
           {formData.projectType === 'Team' && (
             <>
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Team Size (including you, max 4)</label>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Total Team Size (min 2, max 4)</label>
                 <input
                   type="number"
                   name="teamSize"
@@ -110,32 +134,34 @@ const SubmitPaper = () => {
                   value={formData.teamSize}
                   onChange={handleChange}
                   required
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db' }}
+                  className="form-input"
                 />
               </div>
 
               {formData.teamMembers.map((member, index) => (
-                <div key={index} style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '6px', border: '1px solid #e5e7eb' }}>
-                  <h4 style={{ margin: '0 0 1rem 0' }}>Team Member {index + 1}</h4>
-                  <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Name</label>
+                <div key={index} style={{ padding: '2rem', backgroundColor: 'var(--background-color)', border: '1px solid var(--border-color)' }}>
+                  <h4 style={{ margin: '0 0 1.5rem 0', color: 'var(--primary-color)', fontSize: '1.25rem' }}>
+                    {index === 0 ? 'Team Leader' : `Team Member ${index + 1}`}
+                  </h4>
+                  <div style={{ display: 'flex', gap: '1.5rem', flexDirection: 'column' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Name</label>
                       <input
                         type="text"
                         value={member.name}
                         onChange={(e) => handleTeamMemberChange(index, 'name', e.target.value)}
                         required
-                        style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                        className="form-input"
                       />
                     </div>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem' }}>Email</label>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Email</label>
                       <input
                         type="email"
                         value={member.email}
                         onChange={(e) => handleTeamMemberChange(index, 'email', e.target.value)}
                         required
-                        style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                        className="form-input"
                       />
                     </div>
                   </div>
@@ -144,54 +170,54 @@ const SubmitPaper = () => {
             </>
           )}
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Paper Title</label>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Paper Title</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
               required
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db' }}
+              className="form-input"
               placeholder="Enter the title of your paper"
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Abstract</label>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Abstract</label>
             <textarea
               name="abstract"
               value={formData.abstract}
               onChange={handleChange}
               required
               rows="6"
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db' }}
+              className="form-input"
+              style={{ resize: 'vertical', minHeight: '120px' }}
               placeholder="Provide a brief summary of your research..."
             />
           </div>
 
-          <div>
-             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Keywords</label>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+             <label className="form-label">Keywords</label>
              <input
               type="text"
               name="keywords"
               value={formData.keywords}
               onChange={handleChange}
               required
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db' }}
+              className="form-input"
               placeholder="Comma separated keywords (e.g., AI, Machine Learning, React)"
             />
-
           </div>
 
-          <div>
-             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Select Mentor</label>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+             <label className="form-label">Select Mentor</label>
              <select
               name="reviewerId"
               value={formData.reviewerId}
               onChange={handleChange}
               required
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: 'white' }}
+              className="form-input"
              >
                 <option value="">-- Choose a Mentor --</option>
                 {loadingReviewers ? (
@@ -206,30 +232,35 @@ const SubmitPaper = () => {
              </select>
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Upload PDF</label>
-            <div style={{ border: '2px dashed #d1d5db', padding: '2rem', borderRadius: '6px', textAlign: 'center', cursor: 'pointer' }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Upload PDF</label>
+            <div style={{ border: '1px dashed var(--accent-color)', padding: '2.5rem', backgroundColor: 'transparent', textAlign: 'center', transition: 'all 0.3s' }}>
               <input 
                 type="file" 
                 accept=".pdf" 
                 onChange={handleFileChange}
-                required={!formData.pdfName} // Required only if not already "uploaded"
+                required={!formData.pdfName}
                 style={{ display: 'none' }}
                 id="file-upload"
               />
-              <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                <Upload size={32} color="#9ca3af" />
-                <span style={{ color: '#4b5563' }}>{formData.pdfName || 'Click to upload PDF file'}</span>
+              <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <Upload size={36} color="var(--primary-color)" />
+                <span style={{ color: 'var(--text-primary)', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase', fontSize: '0.85rem' }}>
+                  {formData.pdfName || 'Click to select PDF document'}
+                </span>
               </label>
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-             <button type="button" onClick={() => navigate('/dashboard')} style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: 'white', cursor: 'pointer' }}>
+          {error && <div className="error-message" style={{ color: 'var(--error-color, red)', marginTop: '1rem', padding: '0.75rem', backgroundColor: 'rgba(255,0,0,0.1)', border: '1px solid rgba(255,0,0,0.2)', borderRadius: '4px' }}>{error}</div>}
+          {success && <div className="success-message" style={{ color: 'var(--success-color, green)', marginTop: '1rem', padding: '0.75rem', backgroundColor: 'rgba(0,255,0,0.1)', border: '1px solid rgba(0,255,0,0.2)', borderRadius: '4px' }}>Paper submitted successfully! Redirecting...</div>}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+             <button type="button" onClick={() => navigate('/dashboard')} className="btn-auth" disabled={isSubmitting} style={{ width: 'auto', padding: '0.875rem 2rem', backgroundColor: 'transparent', color: 'var(--text-primary)', border: '1px solid #CCCCCC', marginTop: 0 }}>
                Cancel
              </button>
-             <button type="submit" style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: 'none', backgroundColor: '#2563eb', color: 'white', fontWeight: '500', cursor: 'pointer' }}>
-               Submit Paper
+             <button type="submit" className="btn-auth btn-primary" disabled={isSubmitting} style={{ width: 'auto', padding: '0.875rem 2.5rem', marginTop: 0, boxShadow: 'none', opacity: isSubmitting ? 0.7 : 1 }}>
+               {isSubmitting ? 'Submitting...' : 'Submit Paper'}
              </button>
           </div>
         </form>

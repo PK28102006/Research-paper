@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, BookOpen } from 'lucide-react';
+import { User, BookOpen, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/auth.css';
 
@@ -17,6 +17,9 @@ const LoginRoleSelect = () => {
   }, [user, logout]);
   return (
     <div className="auth-container">
+      <Link to="/" className="auth-back-btn">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <div className="auth-card role-selection-container">
         <h2 className="auth-title">Select Your Role</h2>
         <p style={{ color: '#6b7280', marginBottom: '2rem' }}>Please choose how you want to log in to the portal.</p>

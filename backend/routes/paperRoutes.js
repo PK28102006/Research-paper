@@ -7,6 +7,7 @@ const {
   updatePaper,
   deletePaper,
   updatePaperStatus,
+  addCommentToPaper,
   assignPaperToReviewer
 } = require('../controllers/paperController');
 const { verifyToken, requireRole } = require('../middleware/auth');
@@ -39,6 +40,12 @@ router.put(
 
 // Delete paper
 router.delete('/:id', asyncHandler(deletePaper));
+
+// Add comment to paper
+router.post(
+  '/:id/comments',
+  asyncHandler(addCommentToPaper)
+);
 
 // Update paper status (Reviewer or Admin)
 router.put(

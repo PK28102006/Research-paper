@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import '../../styles/auth.css';
 
 const Login = () => {
@@ -84,6 +85,9 @@ const Login = () => {
 
   return (
     <div className="auth-container">
+      <Link to="/login" className="auth-back-btn">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <div className="auth-card">
         <h2 className="auth-title">{getRoleTitle()} Login</h2>
         {error && <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.75rem', borderRadius: '6px', marginBottom: '1.5rem', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}

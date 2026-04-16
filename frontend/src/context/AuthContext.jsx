@@ -39,9 +39,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const result = await api.register(userData);
       if (result.success) {
-        // Auto-login after registration
-        setUser(result.user);
-        storageService.setCurrentUser(result.user);
+        // User must manually log in after registration
         return { success: true, user: result.user };
       }
       return { success: false, message: result.message || 'Registration failed' };

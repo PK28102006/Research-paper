@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
-import { User, BookOpen } from 'lucide-react';
+import { User, BookOpen, ArrowLeft } from 'lucide-react';
 import '../../styles/auth.css';
 
 const RegisterRoleSelect = () => {
   return (
     <div className="auth-container">
+      <Link to="/" className="auth-back-btn">
+        <ArrowLeft size={16} /> Back
+      </Link>
       <div className="auth-card role-selection-container">
         <h2 className="auth-title">Join Our Community</h2>
         <p style={{ color: '#6b7280', marginBottom: '2rem' }}>Choose your role to get started.</p>

@@ -56,7 +56,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2>Welcome, {user.name}</h2>
         <Link to="/dashboard/submit" className="btn-primary" style={{
           backgroundColor: '#2563eb', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.5rem'
@@ -74,9 +74,9 @@ const StudentDashboard = () => {
       </div>
 
       <div className="recent-papers">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
             <h3 style={{ margin: 0 }}>My Submissions</h3>
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ position: 'relative' }}>
                     <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
                     <input 
@@ -109,7 +109,7 @@ const StudentDashboard = () => {
           <div className="paper-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {filteredPapers.map(paper => (
               <div key={paper.id} style={{
-                backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                backgroundColor: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem'
               }}>
                 <div>
                    <h4 style={{ margin: '0 0 0.5rem 0' }}>{paper.title}</h4>
@@ -119,7 +119,7 @@ const StudentDashboard = () => {
                    </p>
                 </div>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                     <StatusBadge status={paper.status} />
                     
                     {paper.status === 'pending' && (

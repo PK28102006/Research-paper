@@ -5,7 +5,7 @@ const User = require('../models/User');
 // @access  Private (Admin only)
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = User.findAll();
+    const users = await User.findAll();
     const sanitizedUsers = users.map(user => User.sanitize(user));
 
     res.json({
@@ -23,7 +23,7 @@ const getAllUsers = async (req, res, next) => {
 // @access  Private
 const getUserById = async (req, res, next) => {
   try {
-    const user = User.findById(req.params.id);
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       return res.status(404).json({
@@ -56,7 +56,7 @@ const updateUser = async (req, res, next) => {
       });
     }
 
-    const updatedUser = User.update(req.params.id, req.body);
+    const updatedUser = await User.update(req.params.id, req.body);
     const sanitizedUser = User.sanitize(updatedUser);
 
     res.json({
@@ -82,7 +82,7 @@ const deleteUser = async (req, res, next) => {
       });
     }
 
-    User.delete(req.params.id);
+    await User.delete(req.params.id);
 
     res.json({
       success: true,
@@ -99,7 +99,7 @@ const deleteUser = async (req, res, next) => {
 const getUsersByRole = async (req, res, next) => {
   try {
     const { role } = req.params;
-    const allUsers = User.findAll();
+    const allUsers = await User.findAll();
     const users = allUsers.filter(u => u.role === role);
     const sanitizedUsers = users.map(user => User.sanitize(user));
 
@@ -118,8 +118,9 @@ const getUsersByRole = async (req, res, next) => {
 // @access  Private
 const getReviewers = async (req, res, next) => {
   try {
-    const allUsers = User.findAll();
-    const reviewers = allUsers.filter(u => u.role === 'reviewer');
+    const allUsers = await User.findAll();
+    // In our DB role can be reviewer or teacher, typically teacher might act as reviewer
+    const reviewers = allUsers.filter(u => u.role === 'reviewer' || u.role === 'teacher');
     const sanitizedReviewers = reviewers.map(user => User.sanitize(user));
 
     res.json({

@@ -1,14 +1,14 @@
-const { readDb, writeDb } = require('../utils/jsonDb');
+const db = require('../config/db');
 
 class User {
   constructor(data) {
-    this.id = data.id || Date.now().toString();
+    this.id = data.id || Date.now().toString(); // Could use uuid in real world
     this.name = data.name;
     this.email = data.email;
     this.password = data.password;
-    this.role = data.role; // 'student', 'reviewer', 'admin'
+    this.role = data.role; // 'student', 'reviewer', 'admin', 'teacher'
     this.mentor = data.mentor || null; // Optional mentor name
-    this.createdAt = data.createdAt || new Date().toISOString();
+    this.createdAt = data.created_at || new Date().toISOString();
   }
 
   // Validation
@@ -27,8 +27,8 @@ class User {
       errors.push('Password must be at least 6 characters long');
     }
 
-    if (!['student', 'reviewer', 'admin'].includes(data.role)) {
-      errors.push('Role must be student, reviewer, or admin');
+    if (!['student', 'reviewer', 'teacher', 'admin'].includes(data.role)) {
+      errors.push('Role must be student, teacher, reviewer, or admin');
     }
 
     return {
@@ -43,76 +43,92 @@ class User {
   }
 
   // Database operations
-  static findAll() {
-    const db = readDb();
-    return db.users || [];
+  static async findAll() {
+    const result = await db.query('SELECT * FROM users');
+    return result.rows.map(row => new User(row));
   }
 
-  static findById(id) {
-    const users = this.findAll();
-    return users.find(u => u.id === id);
+  static async findById(id) {
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+    if (result.rows.length === 0) return null;
+    return new User(result.rows[0]);
   }
 
-  static findByEmail(email) {
-    const users = this.findAll();
-    return users.find(u => u.email === email);
+  static async findByEmail(email) {
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) return null;
+    return new User(result.rows[0]);
   }
 
-  static create(data) {
+  static async create(data) {
     const validation = this.validate(data);
     if (!validation.isValid) {
       throw new Error(validation.errors.join(', '));
     }
 
     // Check if email already exists
-    if (this.findByEmail(data.email)) {
+    const existing = await this.findByEmail(data.email);
+    if (existing) {
       throw new Error('Email already exists');
     }
 
     const user = new User(data);
-    const db = readDb();
-    db.users.push(user);
-    writeDb(db);
+    
+    await db.query(`
+      INSERT INTO users (id, name, email, password, role, mentor, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `, [user.id, user.name, user.email, user.password, user.role, user.mentor, user.createdAt]);
+
     return user;
   }
 
-  static update(id, data) {
-    const db = readDb();
-    const index = db.users.findIndex(u => u.id === id);
-    
-    if (index === -1) {
-      throw new Error('User not found');
-    }
+  static async update(id, data) {
+    // Generate text and params for query
+    let updateFields = [];
+    let queryParams = [];
+    let paramIndex = 1;
 
-    // If email is being changed, check for duplicates
-    if (data.email && data.email !== db.users[index].email) {
-      if (this.findByEmail(data.email)) {
-        throw new Error('Email already exists');
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined && key !== 'id' && key !== 'createdAt' && key !== 'created_at') {
+        updateFields.push(`${key} = $${paramIndex}`);
+        queryParams.push(value);
+        paramIndex++;
       }
     }
 
-    db.users[index] = { ...db.users[index], ...data };
-    writeDb(db);
-    return db.users[index];
-  }
+    if (updateFields.length === 0) {
+      return this.findById(id);
+    }
 
-  static delete(id) {
-    const db = readDb();
-    const initialLength = db.users.length;
-    db.users = db.users.filter(u => u.id !== id);
-    
-    if (db.users.length === initialLength) {
+    queryParams.push(id);
+    const query = `
+      UPDATE users 
+      SET ${updateFields.join(', ')} 
+      WHERE id = $${paramIndex}
+      RETURNING *
+    `;
+
+    const result = await db.query(query, queryParams);
+    if (result.rows.length === 0) {
       throw new Error('User not found');
     }
 
-    writeDb(db);
+    return new User(result.rows[0]);
+  }
+
+  static async delete(id) {
+    const result = await db.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    if (result.rowCount === 0) {
+      throw new Error('User not found');
+    }
     return true;
   }
 
   // Remove password from user object
   static sanitize(user) {
     if (!user) return null;
-    const { password, ...sanitizedUser } = user;
+    const sanitizedUser = { ...user };
+    delete sanitizedUser.password;
     return sanitizedUser;
   }
 }

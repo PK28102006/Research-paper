@@ -1,0 +1,236 @@
+.about-container {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.about-content {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8rem 2rem;
+}
+
+.about-hero {
+  text-align: center;
+  margin-bottom: 6rem;
+}
+
+.about-badge {
+  display: inline-block;
+  padding: 0.35rem 1.25rem;
+  border-radius: 99px;
+  background: #fdfbf7;
+  border: 1px solid #f3e8d2;
+  color: #C5A059;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+.about-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #4b5563;
+  max-width: 750px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+.glass-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 8rem;
+}
+
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 3rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: #C5A059;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #fdfbf7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  border: 1px solid #f3e8d2;
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover .card-icon-wrapper {
+  background: #C5A059;
+}
+
+.glass-card:hover .card-icon-wrapper svg {
+  color: #ffffff !important;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* Directory Section */
+.directory-section {
+  background: #ffffff;
+  padding: 5rem 4rem;
+  border-radius: 24px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.directory-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  margin-bottom: 4rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.directory-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #f9fafb;
+  transition: all 0.2s ease;
+  border: 1px solid #f3f4f6;
+}
+
+.directory-item:hover {
+  background: #fdfbf7;
+  border-color: #f3e8d2;
+}
+
+.dir-icon {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  color: #C5A059;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.directory-item:hover .dir-icon {
+  background: #C5A059;
+  color: #ffffff;
+  border-color: #C5A059;
+}
+
+.dir-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.dir-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.dir-value {
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Responsive About Page */
+@media screen and (max-width: 768px) {
+  .about-content {
+    padding: 4rem 1rem;
+  }
+
+  .about-hero {
+    margin-bottom: 3rem;
+  }
+
+  .about-title {
+    font-size: 2.25rem;
+  }
+
+  .about-subtitle {
+    font-size: 1rem;
+  }
+
+  .glass-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .glass-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .directory-section {
+    padding: 3rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .directory-title {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .directory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .directory-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+}

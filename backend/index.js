@@ -16,9 +16,23 @@ initDb();
 
 // Middleware
 app.use(cors({
-  origin: [config.frontendUrl, 'http://localhost:5173', 'http://localhost:5174'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      config.frontendUrl,
+      'http://localhost:5173',
+      'http://localhost:5174',
+    ];
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    // Also allow any .vercel.app domain for deployment flexibility
+    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins in production for now
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
